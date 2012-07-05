@@ -12,8 +12,21 @@ window.Eventify = function(c) {
         if(!this.event_bindings[eventName]) return;
 
         for(var i = 0; i < this.event_bindings[eventName].length; i++) {
-            console.log('calling', eventName, this.event_bindings[eventName][i])
-            this.event_bindings[eventName][i]()
+            this.event_bindings[eventName][i].apply(this, Array.prototype.slice.call(arguments, 1))
+        }
+    }
+    c.prototype.unbind = function(eventName, func) {
+        if(!this.event_bindings) return;
+        if(!this.event_bindings[eventName]) return;
+
+        if(!func) {
+            delete this.event_bindings[eventName]
+            return
+        }
+
+        for(var i = this.event_bindings[eventName].length - 1; i >= 0; i-- ) {
+            if(this.event_bindings[eventName][i] == func)
+                this.event_bindings[eventName].splice(i, 1)
         }
     }
 }
